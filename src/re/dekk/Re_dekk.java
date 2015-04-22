@@ -33,7 +33,7 @@ public class Re_dekk {
         units=new Unit[2];
         units[0]=drone;
         units[1]=drone;
-        mass=0;
+        mass=10;
         shield=0;
         armor=0;
         power=1;

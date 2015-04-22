@@ -64,6 +64,8 @@ public class Battle {
     static void reload(Stage primaryStage,Battle batt){
         Pane root = new Pane();
         
+        batt.map = AI.turn(batt);
+        
         for(int i=0;i<sizex;i++){
             for(int j=0;j<sizey;j++){
                 

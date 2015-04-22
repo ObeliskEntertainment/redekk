@@ -12,4 +12,9 @@ package re.dekk;
  */
 public class AI {
     
+    static Unit[][] turn(Battle battle){
+    
+        return battle.map;
+    }
+    
 }
