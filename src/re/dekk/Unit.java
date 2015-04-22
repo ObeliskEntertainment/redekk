@@ -16,7 +16,14 @@ import java.util.logging.Logger;
  */
 public class Unit {
     String name,rangedtype,meleetype,sign,owner,armortype;
-    int hp,rangeddmg,range,meleedmg,armor,resistance,stamina,size;
+    int hp;
+    int rangeddmg;
+    int range;
+    int meleedmg;
+    int armor;
+    int resistance;
+    int stamina, maxStamina;
+    int size;
     
     Unit(){
         name="none";
@@ -28,6 +35,7 @@ public class Unit {
         armor=0;
         resistance=0;
         stamina=0;
+        maxStamina = 0;
         rangedtype="";
         meleetype="";
         sign="N";
@@ -46,6 +54,7 @@ public class Unit {
             armor=set.armor;
             resistance=set.resistance;
             stamina=set.stamina;
+            maxStamina = set.stamina;
             rangedtype=set.rangedtype;
             meleetype=set.meleetype;
             sign=set.sign;
@@ -83,5 +92,13 @@ public class Unit {
         }
         u.hp-=dmg;
         return u;
+    }
+    void resetStamina ()
+    {
+        stamina = maxStamina;
+    }
+    void lowerStamina (int ammount)//if there are any reasons to lower stamina, use this method
+    {
+        stamina -= ammount;
     }
 }

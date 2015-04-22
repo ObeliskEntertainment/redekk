@@ -23,6 +23,12 @@ public class Battle {
     static int selectedx,selectedy,sizex,sizey;
     static Unit clear=new Unit();
     
+    private static int calcDisdtance (int targetX, int targetY)//if the path is more complicated
+    {
+        //[put path finding algorithm here]
+        return Math.abs(selectedx - targetX) + Math.abs(selectedy - targetY);
+    }
+    
     private static void select(int x,int y,Battle batt,Stage primaryStage) {
         if(selected.owner.equals("none")){
             if(batt.map[x][y].owner.equals("Re'dekk")){
@@ -31,28 +37,42 @@ public class Battle {
                 selectedy=y;
             }
         }else{
-            if(batt.map[x][y].owner.equals("none")){
-                if((Math.abs(selectedx-x)+Math.abs(selectedy-y))<=selected.stamina){
-                    batt.map[x][y]=selected;
-                    batt.map[selectedx][selectedy]=clear;
-                    selected=clear;
+            if(batt.map[x][y].owner.equals("none"))
+            {
+                //player controlled unit move
+                selected.resetStamina();
+                int distance = calcDisdtance(x ,y);//if the path is more complicated
+                if(distance <= selected.stamina){
+                    batt.map[x][y] = selected;
+                    batt.map[selectedx][selectedy] = clear;
+                    selected.lowerStamina(distance);//if there are any reasons to lower stamina, use this method
+                    selected = clear;
                     reload(primaryStage,batt);
-                }else{
+                }
+                else
+                {
                     selected=clear;
                 }
-            }else if(batt.map[x][y].owner.equals("Re'dekk")){
+            }
+            else if(batt.map[x][y].owner.equals("Re'dekk")){
                 selected=clear;
-            }else if(batt.map[x][y].owner.equals("AI")){
-                if((Math.abs(selectedx-x)+Math.abs(selectedy-y))==1){
+            }
+            else if(batt.map[x][y].owner.equals("AI"))
+            {
+                if((Math.abs(selectedx-x)+Math.abs(selectedy-y))==1)
+                {
                     batt.map[x][y]=selected.hit(batt.map[x][y], false);
-                    if(batt.map[x][y].hp<=0){
+                    if(batt.map[x][y].hp<=0)
+                    {
                         batt.map[x][y]=clear;
                         reload(primaryStage,batt);
                     }
                 }
-                else if((Math.abs(selectedx-x)+Math.abs(selectedy-y))<=selected.range){
+                else if((Math.abs(selectedx-x)+Math.abs(selectedy-y))<=selected.range)
+                {
                     batt.map[x][y]=selected.hit(batt.map[x][y], true);
-                    if(batt.map[x][y].hp<=0){
+                    if(batt.map[x][y].hp<=0)
+                    {
                         batt.map[x][y]=clear;
                         reload(primaryStage,batt);
                     }
@@ -61,7 +81,8 @@ public class Battle {
         }
     }
     
-    static void reload(Stage primaryStage,Battle batt){
+    static void reload(Stage primaryStage,Battle batt)
+    {
         Pane root = new Pane();
         
         batt.map = AI.turn(batt);
