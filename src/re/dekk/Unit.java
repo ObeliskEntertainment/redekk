@@ -24,6 +24,7 @@ public class Unit {
     int resistance;
     int stamina, maxStamina;
     int size;
+    static boolean isObstacle;
     
     Unit(){
         name="none";
@@ -41,8 +42,8 @@ public class Unit {
         sign="N";
         size=0;
         armortype="";
+        isObstacle = false;
     }
-    
     Unit(String type){
         try {
             Unit set=UnitSetter.setUnit(type);
@@ -61,11 +62,12 @@ public class Unit {
             owner=set.owner;
             size=set.size;
             armortype=set.armortype;
+            if (hp > 0)
+                isObstacle = true;
         } catch (IOException ex) {
             Logger.getLogger(Unit.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
     Unit hit(Unit u,boolean range){
         int dmg=0;
         if(range){
@@ -100,5 +102,9 @@ public class Unit {
     void lowerStamina (int ammount)//if there are any reasons to lower stamina, use this method
     {
         stamina -= ammount;
+    }
+    static boolean isEmpty ()//if it has no HP it is passable, a different reason might be more suitable here, though
+    { 
+        return !isObstacle;
     }
 }

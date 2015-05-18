@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import java.util.*;
 
 /**
  *
@@ -18,15 +19,71 @@ import javafx.stage.Stage;
  */
 public class Battle {
 
-    Unit[][] map;
+    static Unit[][] map;
     static Unit selected=new Unit();
     static int selectedx,selectedy,sizex,sizey;
     static Unit clear=new Unit();
     
+    private static void setDistance (int y, int x, int crrDist, int[][] mapTemplate, LinkedList<Integer> queueY, LinkedList<Integer> queueX)
+    {
+        if (x >= 0 && y >= 0 &&
+            x < sizex && y < sizey &&//is the cell inside the map
+            mapTemplate[y][x] != -1 &&//is the cell an obstacle
+            mapTemplate[y][x] == 0)//is the cell calculated
+        {
+            mapTemplate[y][x] = crrDist + 1;
+            queueX.add(x);
+            queueY.add(y);
+        }
+    }
     private static int calcDisdtance (int targetX, int targetY)//if the path is more complicated
     {
-        //[put path finding algorithm here]
-        return Math.abs(selectedx - targetX) + Math.abs(selectedy - targetY);
+        //ARRAYS ARE ALLWAYS [ROWS(Y)][COLUMS(X)], not [X][Y]
+        if (selectedx == targetX && selectedy - 1 == targetY) {return 1;}//if the target is a neighbour cell to the start
+        if (selectedx + 1 == targetX && selectedy == targetY) {return 1;}//simply move one cell in the desired direction
+        if (selectedx == targetX && selectedy + 1 == targetY) {return 1;}
+        if (selectedx - 1 == targetX && selectedy == targetY) {return 1;}
+        //===============================================================
+        int[][] mapTemplate = new int[sizey][sizex];//mapTemplate - the value in each cell represents the distance from the start to the target - 0 (zero) is not yet found
+        LinkedList<Integer> queueX = new LinkedList<Integer>();
+        LinkedList<Integer> queueY = new LinkedList<Integer>();
+        for (int y = 0; y < sizey; y++)
+        {
+            for (int x = 0; x < sizex; x++)
+            {
+                if (map[y][x].isEmpty())
+                    mapTemplate[y][x] = 0;
+                else
+                    mapTemplate[y][x] = -1;//obstacle
+            }
+        }
+        int distance = 0;
+        boolean targetFound = false;
+        mapTemplate[selectedy][selectedx] = -1;
+        setDistance (selectedy - 1, selectedx, 0, mapTemplate, queueY, queueX);//up
+        setDistance (selectedy, selectedx + 1, 0, mapTemplate, queueY, queueX);//right
+        setDistance (selectedy + 1, selectedx, 0, mapTemplate, queueY, queueX);//down
+        setDistance (selectedy, selectedx - 1, 0, mapTemplate, queueY, queueX);//left
+        while (!targetFound)
+        {
+            if (queueX.peek() == targetX && queueY.peek() - 1 == targetY)
+                return mapTemplate[queueY.peek()][queueX.peek()] + 1;//if the target is a neighbour cell to the start, simply move one cell in the desired direction
+            if (queueX.peek() + 1 == targetX && queueY.peek() == targetY)
+                return mapTemplate[queueY.peek()][queueX.peek()] + 1;
+            if (queueX.peek() == targetX && queueY.peek() + 1 == targetY)
+                return mapTemplate[queueY.peek()][queueX.peek()] + 1;
+            if (queueX.peek() - 1 == targetX && queueY.peek() == targetY)
+                return mapTemplate[queueY.peek()][queueX.peek()] + 1;
+            setDistance (queueY.peek() - 1, queueX.peek(),//neighbour cell to check //up
+                    mapTemplate[queueY.peek()][queueX.peek()],//how far is the current cell from the start
+                    mapTemplate, queueY, queueX);//map template data
+            setDistance (queueY.peek(), queueX.peek() + 1, mapTemplate[queueY.peek()][queueX.peek()], mapTemplate, queueY, queueX);//right
+            setDistance (queueY.peek() + 1, queueX.peek(), mapTemplate[queueY.peek()][queueX.peek()], mapTemplate, queueY, queueX);//down
+            setDistance (queueY.peek(), queueX.peek() - 1, mapTemplate[queueY.peek()][queueX.peek()], mapTemplate, queueY, queueX);//left
+            queueX.remove();
+            queueY.remove();
+        }
+        return distance;
     }
     
     private static void select(int x,int y,Battle batt,Stage primaryStage) {
