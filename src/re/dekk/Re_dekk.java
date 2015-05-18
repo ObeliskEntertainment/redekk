@@ -15,6 +15,18 @@ public class Re_dekk {
     int mass,shield,armor,power,powergeneration;
     
     Re_dekk(){
+        Unit drone=newdrone();
+        units=new Unit[2];
+        units[0]=drone;
+        units[1]=drone;
+        mass=10;
+        shield=0;
+        armor=0;
+        power=1;
+        powergeneration=1;
+    }
+    
+    final Unit newdrone(){
         Unit drone=new Unit();
         drone.armor=0;
         drone.armortype="solid";
@@ -31,13 +43,6 @@ public class Re_dekk {
         drone.size=1;
         drone.stamina=5;
         drone.maxStamina = drone.stamina;
-        units=new Unit[2];
-        units[0]=drone;
-        units[1]=drone;
-        mass=10;
-        shield=0;
-        armor=0;
-        power=1;
-        powergeneration=1;
+        return drone;
     }
 }

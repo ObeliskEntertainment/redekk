@@ -42,6 +42,7 @@ public class UnitSetter {
         unit.range=Integer.parseInt(stats[10]);
         unit.meleedmg=Integer.parseInt(stats[11]);
         unit.meleetype=stats[12];
+        unit.maxStamina=unit.stamina;
         unit.owner="AI";
         return unit;
     }
