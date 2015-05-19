@@ -75,6 +75,7 @@ public class Upgrade {
         
         ComboBox chooseunit = new ComboBox(listofunits);
         chooseunit.setLayoutY(200);
+        chooseunit.setValue(chooseunit.getItems().toArray()[0]);
         root.getChildren().add(chooseunit);
         
         Button units = new Button();
@@ -84,6 +85,23 @@ public class Upgrade {
             upgradeUnits(primaryStage, lvl, redekk, Integer.parseInt(chooseunit.getValue().toString().split("-")[0]));
         });
         root.getChildren().add(units);
+        
+        Button newunit = new Button();
+        newunit.setText("add new unit: cost: 50");
+        newunit.setLayoutY(300);
+        newunit.setOnAction((ActionEvent event) -> {
+            if(redekk.mass>50){
+                redekk.mass-=50;
+                Unit[] u=new Unit[redekk.units.length+1];
+                for(int j=0;j<redekk.units.length;j++){
+                    u[j]=redekk.units[j];
+                }
+                u[redekk.units.length]=redekk.newdrone();
+                redekk.units=u;
+                startUpgrading(primaryStage,lvl, redekk);
+            }
+        });
+        root.getChildren().add(newunit);
         
         Button back = new Button();
         back.setText("back");
@@ -107,6 +125,7 @@ public class Upgrade {
     
     static public void upgradeUnits(Stage primaryStage,Level lvl,Re_dekk redekk,int i) {
         Pane root = new Pane();
+        Unit res=redekk.units[i];
         
         Text mass=new Text();
         mass.setText("mass= "+Integer.toString(redekk.mass));
@@ -115,14 +134,14 @@ public class Upgrade {
         
         Button material=new Button();
         material.setText("material density: health, armor : cost: "+Integer.toString(
-                redekk.units[i].armor*3+redekk.units[i].hp)
+                res.armor*3+res.hp)
                 );
         material.setLayoutY(120);
         material.setOnAction((ActionEvent event) -> {
-            if(redekk.mass>redekk.units[i].armor*3+redekk.units[i].hp){
-                redekk.mass-=redekk.units[i].armor*3+redekk.units[i].hp;
-                redekk.units[i].armor++;
-                redekk.units[i].hp+=5;
+            if(redekk.mass>res.armor*3+res.hp){
+                redekk.mass-=res.armor*3+res.hp;
+                res.armor++;
+                res.hp+=5;
                 upgradeUnits(primaryStage,lvl,redekk,i);
             }
         });
@@ -130,15 +149,15 @@ public class Upgrade {
         
         Button powercore=new Button();
         powercore.setText("power core: stamina, resistance ,range : cost: "+Integer.toString(
-                redekk.units[i].resistance*3+redekk.units[i].maxStamina*3+redekk.units[i].range*3)
+                res.resistance*3+res.maxStamina*3+res.range*3)
                 );
         powercore.setLayoutY(160);
         powercore.setOnAction((ActionEvent event) -> {
-            if(redekk.mass>redekk.units[i].resistance*3+redekk.units[i].maxStamina*3+redekk.units[i].range*3){
-                redekk.mass-=redekk.units[i].resistance*3+redekk.units[i].maxStamina*3+redekk.units[i].range*3;
-                redekk.units[i].resistance++;
-                redekk.units[i].maxStamina++;
-                redekk.units[i].range++;
+            if(redekk.mass>res.resistance*3+res.maxStamina*3+res.range*3){
+                redekk.mass-=res.resistance*3+res.maxStamina*3+res.range*3;
+                res.resistance++;
+                res.maxStamina++;
+                res.range++;
                 upgradeUnits(primaryStage,lvl,redekk,i);
             }
         });
@@ -146,14 +165,14 @@ public class Upgrade {
         
         Button weaponry=new Button();
         weaponry.setText("weaponry: meleedmg, rangeddmg : cost: "+Integer.toString(
-                redekk.units[i].meleedmg*3+redekk.units[i].rangeddmg*3)
+                res.meleedmg*3+res.rangeddmg*3)
                 );
         weaponry.setLayoutY(200);
         weaponry.setOnAction((ActionEvent event) -> {
-            if(redekk.mass>redekk.units[i].meleedmg*3+redekk.units[i].rangeddmg*3){
-                redekk.mass-=redekk.units[i].meleedmg*3+redekk.units[i].rangeddmg*3;
-                redekk.units[i].meleedmg++;
-                redekk.units[i].rangeddmg++;
+            if(redekk.mass>res.meleedmg*3+res.rangeddmg*3){
+                redekk.mass-=res.meleedmg*3+res.rangeddmg*3;
+                res.meleedmg++;
+                res.rangeddmg++;
                 upgradeUnits(primaryStage,lvl,redekk,i);
             }
         });
@@ -161,20 +180,20 @@ public class Upgrade {
         
         Button grade=new Button();
         grade.setText("grade: all : cost: "+Integer.toString(
-                redekk.units[i].size*redekk.units[i].size*100)
+                res.size*res.size*100)
                 );
         grade.setLayoutY(240);
         grade.setOnAction((ActionEvent event) -> {
-            if(redekk.mass>redekk.units[i].size*redekk.units[i].size*100){
-                redekk.mass-=redekk.units[i].size*redekk.units[i].size*100;
-                redekk.units[i].armor+=5;
-                redekk.units[i].hp+=25;
-                redekk.units[i].meleedmg+=5;
-                redekk.units[i].rangeddmg+=5;
-                redekk.units[i].resistance+=5;
-                redekk.units[i].maxStamina+=5;
-                redekk.units[i].range+=5;
-                redekk.units[i].size+=5;
+            if(redekk.mass>res.size*res.size*100){
+                redekk.mass-=res.size*res.size*100;
+                res.armor+=5;
+                res.hp+=25;
+                res.meleedmg+=5;
+                res.rangeddmg+=5;
+                res.resistance+=5;
+                res.maxStamina+=5;
+                res.range+=5;
+                res.size+=5;
                 upgradeUnits(primaryStage,lvl,redekk,i);
             }
         });
@@ -184,11 +203,8 @@ public class Upgrade {
         back.setText("back");
         back.setLayoutY(450);
         back.setOnAction((ActionEvent event) -> {
-            try {
-                Level.resumeLevel(primaryStage, lvl, redekk);
-            } catch (IOException ex) {
-                Logger.getLogger(Upgrade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            }
+            redekk.units[i]=res;
+            startUpgrading(primaryStage,lvl, redekk);
         });
         root.getChildren().add(back);
         

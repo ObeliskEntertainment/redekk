@@ -45,6 +45,7 @@ public class ChooseLevel {
         chooselevel.setLayoutX(00);
         chooselevel.setLayoutY(00);
         chooselevel.setMaxWidth(100);
+        chooselevel.setValue(chooselevel.getItems().toArray()[0]);
         root.getChildren().add(chooselevel);
         
         Button startShosenLevel=new Button();
